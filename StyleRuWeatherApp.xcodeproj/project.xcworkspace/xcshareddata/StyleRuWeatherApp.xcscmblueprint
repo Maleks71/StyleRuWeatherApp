@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "69A0726C88FDF725F5A36B5B764F5B2956281344",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "F309D402BF4C91B4A954D3376DB8BD52F965A225" : 0,
+    "69A0726C88FDF725F5A36B5B764F5B2956281344" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "98DC7A11-2294-4446-B4D5-07789A590DC7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "F309D402BF4C91B4A954D3376DB8BD52F965A225" : "StyleRuWeatherApp\/StyleRuWeatherApp\/",
+    "69A0726C88FDF725F5A36B5B764F5B2956281344" : "StyleRuWeatherApp\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "StyleRuWeatherApp",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "StyleRuWeatherApp.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ownmas\/StyleRuWeatherApp.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "69A0726C88FDF725F5A36B5B764F5B2956281344"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/ownmas\/StyleRuWeatherApp.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "F309D402BF4C91B4A954D3376DB8BD52F965A225"
+    }
+  ]
+}
