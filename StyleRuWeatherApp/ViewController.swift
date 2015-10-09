@@ -47,10 +47,23 @@ class ViewController: UIViewController {
             if let js = response.result.value {
                 
                 let data = JSON(js)
-                print("/////1st: \(data)")
+                print("\n/////1st: \(data)")
                 
-                weatherData.nowTemp = data["main"]["temp"].double ?? 999.0
-                weatherData.nowWeather = data["weather"][0]["main"].string ?? "-"
+                if let nowTemp = data["main"]["temp"].double {
+                    weatherData.nowTemp = Int( round(nowTemp) )
+                }
+                
+                if let nowWindSpeed = data["wind"]["speed"].int {
+                    
+                    let convert = round( Double(nowWindSpeed) * 3.6 )
+                    weatherData.nowWindSpeed = Int(convert)
+                }
+                
+                if let nowPressure = data["main"]["pressure"].int {
+                    weatherData.nowPressure = nowPressure
+                }
+                
+                weatherData.nowWeather = data["weather"][0]["main"].string ?? "?"
             }
         }
         
@@ -61,56 +74,49 @@ class ViewController: UIViewController {
             if let js = response.result.value {
                 
                 let data = JSON(js)
-                print("/////2nd: \(data)")
+                print("\n/////2nd: \(data)")
                 
-                weatherData.todayTemps[0] = data["list"][0]["temp"]["night"].double ?? 999.0
-                weatherData.todayTemps[1] = data["list"][0]["temp"]["morn"].double ?? 999.0
-                weatherData.todayTemps[2] = data["list"][0]["temp"]["day"].double ?? 999.0
-                weatherData.todayTemps[3] = data["list"][0]["temp"]["eve"].double ?? 999.0
-                
-                for i in 0..<6 {
-                    
-                    /*var nextTemps = [Int]()
-                    
-                    if let night = data["list"][i]["night"].int {
-                        nextTemps.append(night)
-                    }
-                    if let morn = data["list"][i]["morn"].int {
-                        nextTemps.append(morn)
-                    }
-                    if let day = data["list"][i]["day"].int {
-                        nextTemps.append(day)
-                    }
-                    if let eve = data["list"][i]["eve"].int {
-                        nextTemps.append(eve)
-                    }
-                    
-                    weatherData.nextTemp[i] = nextTemps.reduce(0, combine: +) / nextTemps.count */
-                    
-                    let summ =
-                        data["list"][i]["temp"]["night"].double! +
-                        data["list"][i]["temp"]["morn"].double! +
-                        data["list"][i]["temp"]["day"].double! +
-                        data["list"][i]["temp"]["eve"].double!
-                    
-                    weatherData.nextTemp[i] = summ / 4.0
-                    
-                    weatherData.nextWeather[i] = data["list"][i]["weather"][0]["main"].string ?? "-"
+                func convertToRoundInt(d: Double?) -> Int {
+                    return Int( round(d ?? 777.0) )
                 }
                 
-                /*let count = data["cnt"].int ?? 0
-                print(count)
+                weatherData.todayTemps[0] = convertToRoundInt(data["list"][0]["temp"]["night"].double)
+                weatherData.todayTemps[1] = convertToRoundInt(data["list"][0]["temp"]["morn"].double)
+                weatherData.todayTemps[2] = convertToRoundInt(data["list"][0]["temp"]["day"].double)
+                weatherData.todayTemps[3] = convertToRoundInt(data["list"][0]["temp"]["eve"].double)
+                
+                let count = data["cnt"].int ?? 0
                 for i in 0..<count {
                     
-                    if let temp = data["list"][i]["main"]["temp"].int {
-                        print("\(i). \(temp)")
+                    var nextTemp = [Double]()
+                    
+                    if let night = data["list"][i]["night"].double {
+                        nextTemp.append(night)
                     }
-                }*/
-                
+                    
+                    if let morn = data["list"][i]["morn"].double {
+                        nextTemp.append(morn)
+                    }
+                    
+                    if let day = data["list"][i]["day"].double {
+                        nextTemp.append(day)
+                    }
+                    
+                    if let eve = data["list"][i]["eve"].double {
+                        nextTemp.append(eve)
+                    }
+                    
+                    if nextTemp.count != 0 {
+                        let summ = round( nextTemp.reduce(0, combine: +) / Double(nextTemp.count) )
+                        weatherData.nextTemp[i] = Int(summ)
+                    }
+                    
+                    weatherData.nextWeather[i] = data["list"][i]["weather"][0]["main"].string ?? "?"
+                }
             }
         }
         
-        set_task(3.0) {
+        set_task(2.0) {
             
             print("\n//////////")
             print("nowTemp = \(weatherData.nowTemp)")
