@@ -11,14 +11,12 @@ import Foundation
 
 class WeatherData {
     
-    var temp: Int?
-    var clouds: Int?
-    var windSpeed: Int?
-    var pressure: Int?
+    var nowTemp = 777.0
+    var nowWeather = "?"
     
-    init() {
-        
-        //self.temp = 0
-    }
+    var todayTemps = [777.0, 777.0, 777.0, 777.0]
+    
+    var nextTemp = [777.0, 777.0, 777.0, 777.0, 777.0, 777.0]
+    var nextWeather = ["?", "?", "?", "?", "?", "?"]
     
 }
