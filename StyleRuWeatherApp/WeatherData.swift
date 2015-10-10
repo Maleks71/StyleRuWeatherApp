@@ -13,12 +13,17 @@ class WeatherData {
     
     var nowTemp = 777
     var nowWeather = ""
-    var nowWindSpeed = 888
-    var nowPressure = 0
+    var nowWindSpeed = 777
+    var nowPressure = 777
     
     var todayTemps = [777, 777, 777, 777]
     
-    var nextTemp = [777, 777, 777, 777, 777, 777]
+    struct Temp {
+        var day = 777
+        var night = 777
+    }
+    
+    var nextTemp = [Temp(), Temp(), Temp(), Temp(), Temp(), Temp()]
     var nextWeather = ["", "", "", "", "", ""]
     
 }
