@@ -17,6 +17,7 @@
 		3DACA6CB1BC5998000E50B4D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DACA6C91BC5998000E50B4D /* LaunchScreen.storyboard */; };
 		3DC3E4441BC78D4000684B6A /* SwiftyJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DC3E43B1BC78D2800684B6A /* SwiftyJSON.framework */; };
 		3DC3E4451BC78D4000684B6A /* SwiftyJSON.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3DC3E43B1BC78D2800684B6A /* SwiftyJSON.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3DF446AC1BCB017E00A51F39 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF446AB1BCB017E00A51F39 /* SettingsViewController.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,7 @@
 		3DACA6CA1BC5998000E50B4D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3DACA6CC1BC5998000E50B4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DC3E4321BC78D2800684B6A /* SwiftyJSON.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftyJSON.xcodeproj; path = "SwiftyJSON-master/SwiftyJSON.xcodeproj"; sourceTree = "<group>"; };
+		3DF446AB1BCB017E00A51F39 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 			children = (
 				3DACA6C01BC5998000E50B4D /* AppDelegate.swift */,
 				3DACA6C21BC5998000E50B4D /* ViewController.swift */,
+				3DF446AB1BCB017E00A51F39 /* SettingsViewController.swift */,
 				3D36B19F1BC68C2500D46870 /* WeatherData.swift */,
 				3DACA6C41BC5998000E50B4D /* Main.storyboard */,
 				3DACA6C71BC5998000E50B4D /* Assets.xcassets */,
@@ -363,6 +366,7 @@
 				3DACA6C31BC5998000E50B4D /* ViewController.swift in Sources */,
 				3D36B1A01BC68C2500D46870 /* WeatherData.swift in Sources */,
 				3DACA6C11BC5998000E50B4D /* AppDelegate.swift in Sources */,
+				3DF446AC1BCB017E00A51F39 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

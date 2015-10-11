@@ -22,10 +22,24 @@ class ViewController: UIViewController {
     @IBOutlet var outNextTempsDay: [UILabel]!
     @IBOutlet var outNextTempsNight: [UILabel]!
 
+    var currentCity = "Moscow"
     let weatherData = WeatherData()
     
+    @IBAction func updateButton(sender: AnyObject) {
+        self.updateCurrentCity()
+        self.getWeatherData()
+    }
     
-    // This func will removed after App testing
+    func updateCurrentCity() {
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        
+        if let memoryCity = defaults.stringForKey("StyleRuCity") {
+            self.currentCity = memoryCity
+        }
+    }
+    
+    // Debug
     func set_task(delay: Double, closure: ()->()) {
         dispatch_after(
             dispatch_time(
@@ -35,8 +49,10 @@ class ViewController: UIViewController {
             dispatch_get_main_queue(), closure)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.updateCurrentCity()
         self.getWeatherData()
     }
     
@@ -44,14 +60,14 @@ class ViewController: UIViewController {
     func getWeatherData() {
         
         let params1 = [
-            "q" : "Moscow",
+            "q" : self.currentCity,
             "mode" : "json",
             "units" : "metric",
             "APPID" : "d1c9745179e1566578438f0f6fd39399"
         ]
         
         let params2 = [
-            "q" : "Moscow",
+            "q" : self.currentCity,
             "mode" : "json",
             "units" : "metric",
             "cnt" : "6",
@@ -63,25 +79,36 @@ class ViewController: UIViewController {
             
             if let js = response.result.value {
                 
-                let data = JSON(js)
-                print("\n/////1st: \(data)")
+                print(response.request)  // original URL request
+                print(response.response) // URL response
+                print(response.data)     // server data
+                print(response.result)   // result of response serialization
                 
+                let data = JSON(js)
+                print("\n/////1st: \(data)") // Debug
+                
+                // Now temperature
                 if let nowTemp = data["main"]["temp"].double {
                     self.weatherData.nowTemp = Int( round(nowTemp) )
                 }
                 
-                self.weatherData.nowWeather = data["weather"][0]["main"].string ?? "?"
+                // Now weather
+                self.weatherData.nowWeather = data["weather"][0]["main"].string  ?? "—"
                 
+                // Now wind speed
                 if let nowWindSpeed = data["wind"]["speed"].int {
                     let convert = round( Double(nowWindSpeed) * 3.6 )
                     self.weatherData.nowWindSpeed = Int(convert)
                 }
                 
+                // Now pressure
                 if let nowPressure = data["main"]["pressure"].int {
                     self.weatherData.nowPressure = nowPressure
                 }
                 
                 self.setNowWeatherOutlets()
+            } else {
+                print("ERROR")
             }
         }
         
@@ -92,12 +119,13 @@ class ViewController: UIViewController {
                 if let js = response.result.value {
                     
                     let data = JSON(js)
-                    print("\n/////2nd: \(data)")
+                    print("\n/////2nd: \(data)") // Debug
                     
                     func convertToRoundInt(d: Double?) -> Int {
                         return Int( round(d ?? 777.0) )
                     }
                     
+                    // Today temperatures
                     self.weatherData.todayTemps[0] = convertToRoundInt(data["list"][0]["temp"]["night"].double)
                     self.weatherData.todayTemps[1] = convertToRoundInt(data["list"][0]["temp"]["morn"].double)
                     self.weatherData.todayTemps[2] = convertToRoundInt(data["list"][0]["temp"]["day"].double)
@@ -106,9 +134,11 @@ class ViewController: UIViewController {
                     let count = data["cnt"].int ?? 0
                     for i in 0..<count {
                         
+                        // Next day & night temperatures
                         self.weatherData.nextTemp[i].day = Int( round(data["list"][i]["temp"]["day"].double ?? 777.0) )
                         self.weatherData.nextTemp[i].night = Int( round(data["list"][i]["temp"]["night"].double ?? 777.0) )
                         
+                        // Next days weather
                         self.weatherData.nextWeather[i] = data["list"][i]["weather"][0]["main"].string ?? "?"
                     }
                     
@@ -116,6 +146,7 @@ class ViewController: UIViewController {
                 }
         }
         
+        // Debug
         set_task(4.0) {
             
             print("\n//////////")
@@ -132,33 +163,24 @@ class ViewController: UIViewController {
     
     func setNowWeatherOutlets() {
         
-        outNowTemp.text = String(self.weatherData.nowTemp) + "°"
-        outNowWeather.text = self.weatherData.nowWeather
-        outNowWindSpeed.text = String(self.weatherData.nowWindSpeed) + " km/h"
-        outNowPressure.text = String(self.weatherData.nowPressure) + " hPa"
+        self.navigationItem.title = self.currentCity
         
-        outTodayTemps[0].text = String(self.weatherData.todayTemps[0])
-        outTodayTemps[1].text = String(self.weatherData.todayTemps[1])
-        outTodayTemps[2].text = String(self.weatherData.todayTemps[2])
-        outTodayTemps[3].text = String(self.weatherData.todayTemps[3])
-        
-        outNextTempsDay[0].text = String(self.weatherData.nextTemp[0].day)
-        outNextTempsDay[1].text = String(self.weatherData.nextTemp[1].day)
-        outNextTempsDay[2].text = String(self.weatherData.nextTemp[2].day)
-        outNextTempsDay[3].text = String(self.weatherData.nextTemp[3].day)
-        outNextTempsDay[4].text = String(self.weatherData.nextTemp[4].day)
-        outNextTempsDay[5].text = String(self.weatherData.nextTemp[5].day)
-        
-        outNextTempsNight[0].text = String(self.weatherData.nextTemp[0].night)
-        outNextTempsNight[1].text = String(self.weatherData.nextTemp[1].night)
-        outNextTempsNight[2].text = String(self.weatherData.nextTemp[2].night)
-        outNextTempsNight[3].text = String(self.weatherData.nextTemp[3].night)
-        outNextTempsNight[4].text = String(self.weatherData.nextTemp[4].night)
-        outNextTempsNight[5].text = String(self.weatherData.nextTemp[5].night)
+        self.outNowTemp.text = String(self.weatherData.nowTemp) + "°"
+        self.outNowWeather.text = self.weatherData.nowWeather
+        self.outNowWindSpeed.text = String(self.weatherData.nowWindSpeed) + " km/h"
+        self.outNowPressure.text = String(self.weatherData.nowPressure) + " hPa"
     }
     
     func setNextWeatherOutlets() {
         
+        for i in 0...3 {
+            self.outTodayTemps[i].text = String(self.weatherData.todayTemps[i])
+        }
+        
+        for i in 0...5 {
+            self.outNextTempsDay[i].text = String(self.weatherData.nextTemp[i].day)  + "°"
+            self.outNextTempsNight[i].text = String(self.weatherData.nextTemp[i].night)  + "°"
+        }
     }
     
 }

@@ -12,7 +12,7 @@ import Foundation
 class WeatherData {
     
     var nowTemp = 777
-    var nowWeather = ""
+    var nowWeather: String? = ""
     var nowWindSpeed = 777
     var nowPressure = 777
     
