@@ -29,13 +29,13 @@ class ViewController: UIViewController {
     
     enum WeekDay: String {
         
-        case Monday = "Monday"
-        case Tuesday = "Tuesday"
-        case Wednesday = "Wednesday"
-        case Thursday = "Thursday"
-        case Friday = "Friday"
-        case Saturday = "Saturday"
-        case Sunday = "Sunday"
+        case Monday = "понедельник"
+        case Tuesday = "вторник"
+        case Wednesday = "среда"
+        case Thursday = "четверг"
+        case Friday = "пятница"
+        case Saturday = "суббота"
+        case Sunday = "воскресенье"
         
         mutating func goNextDay() {
             switch self {
@@ -79,6 +79,7 @@ class ViewController: UIViewController {
             self.currentCity = memoryCity
         } else {
             self.currentCity = "Moscow"
+            defaults.setObject("Moscow", forKey: "StyleRuCity")
         }
     }
     
@@ -96,6 +97,7 @@ class ViewController: UIViewController {
         let daysArray = asd?.getNextSixDays()
         
         for i in 0..<6 {
+            print("\(i) — \(daysArray![i] ?? nil)")
             self.outWeekDay[i].text = daysArray![i]
         }
     }
@@ -132,11 +134,6 @@ class ViewController: UIViewController {
         Alamofire.request(.GET, "http://api.openweathermap.org/data/2.5/weather", parameters: params1).responseJSON { response in
             
             if let js = response.result.value {
-                
-                print(response.request)  // original URL request
-                print(response.response) // URL response
-                print(response.data)     // server data
-                print(response.result)   // result of response serialization
                 
                 let data = JSON(js)
                 print("\n/////1st: \(data)") // Debug
@@ -229,8 +226,8 @@ class ViewController: UIViewController {
         
         self.outNowTemp.text = String(self.weatherData.nowTemp) + "°"
         self.outNowWeather.text = self.weatherData.nowWeather
-        self.outNowWindSpeed.text = String(self.weatherData.nowWindSpeed) + " km/h"
-        self.outNowPressure.text = String(self.weatherData.nowPressure) + " hPa"
+        self.outNowWindSpeed.text = String(self.weatherData.nowWindSpeed) + " км/ч"
+        self.outNowPressure.text = String(self.weatherData.nowPressure) + " кПа"
     }
     
     func setNextWeatherOutlets() {
