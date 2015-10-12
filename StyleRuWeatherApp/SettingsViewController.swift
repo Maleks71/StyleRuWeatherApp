@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 extension String {
     func trim() -> String {
@@ -14,8 +15,10 @@ extension String {
     }
 }
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UITableViewController, CLLocationManagerDelegate {
 
+    var locationManager: CLLocationManager!
+    
     @IBOutlet var cityField: UITextField!
     @IBOutlet var saveButton: UIBarButtonItem!
     
@@ -31,6 +34,48 @@ class SettingsViewController: UIViewController {
         }
     }
 
+    @IBAction func useCurrentLocationButton(sender: AnyObject) {
+        print("touch")
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestAlwaysAuthorization()
+        locationManager.startUpdatingLocation()
+    }
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        locationManager.stopUpdatingLocation()
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        print("progress")
+        
+        let locationArray = locations as NSArray
+        let locationObj = locationArray.lastObject as! CLLocation
+        let coord = locationObj.coordinate
+        
+        print(coord.latitude)
+        print(coord.longitude)
+    }
+    
+    func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+            var shouldIAllow = false
+            
+            switch status {
+                case CLAuthorizationStatus.Restricted: break
+                case CLAuthorizationStatus.Denied: break
+                case CLAuthorizationStatus.NotDetermined: break
+                default: shouldIAllow = true
+            }
+        
+            NSNotificationCenter.defaultCenter().postNotificationName("LabelHasbeenUpdated", object: nil)
+        
+            if (shouldIAllow == true) {
+                locationManager.startUpdatingLocation()
+            }
+    }
+
     @IBAction func cancelAction(sender: AnyObject) {
         self.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -38,7 +83,7 @@ class SettingsViewController: UIViewController {
     @IBAction func saveAction(sender: AnyObject) {
         
         let defaults = NSUserDefaults.standardUserDefaults()
-        defaults.setObject(cityField.text!, forKey: "StyleRuCity")
+        defaults.setObject(cityField.text!.capitalizedString, forKey: "StyleRuCity")
         
         self.dismissViewControllerAnimated(true, completion: nil)
     }

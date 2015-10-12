@@ -11,19 +11,19 @@ import Foundation
 
 class WeatherData {
     
-    var nowTemp = 777
+    var nowTemp = 0
     var nowWeather: String? = ""
-    var nowWindSpeed = 777
-    var nowPressure = 777
+    var nowWindSpeed = 0
+    var nowPressure = 0
     
-    var todayTemps = [777, 777, 777, 777]
+    var todayTemps = [0, 0, 0, 0]
     
     struct Temp {
-        var day = 777
-        var night = 777
+        var day = 0
+        var night = 0
     }
     
     var nextTemp = [Temp(), Temp(), Temp(), Temp(), Temp(), Temp()]
     var nextWeather = ["", "", "", "", "", ""]
-    
+    var nextWeekDays = ["", "", "", "", "", ""]
 }
