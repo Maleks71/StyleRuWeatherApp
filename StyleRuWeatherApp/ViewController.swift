@@ -10,6 +10,8 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
+let appID = "d1c9745179e1566578438f0f6fd39399"
+
 class ViewController: UIViewController {
     
     var currentCity = "Moscow"
@@ -25,40 +27,7 @@ class ViewController: UIViewController {
     @IBOutlet var outNextTempsDay: [UILabel]!
     @IBOutlet var outNextTempsNight: [UILabel]!
     @IBOutlet var outNextWeather: [UILabel]!
-    @IBOutlet var outWeekDay: [UILabel]!
-    
-    enum WeekDay: String {
-        
-        case Monday = "понедельник"
-        case Tuesday = "вторник"
-        case Wednesday = "среда"
-        case Thursday = "четверг"
-        case Friday = "пятница"
-        case Saturday = "суббота"
-        case Sunday = "воскресенье"
-        
-        mutating func goNextDay() {
-            switch self {
-                case .Monday: self = .Tuesday
-                case .Tuesday: self = .Wednesday
-                case .Wednesday: self = .Thursday
-                case .Thursday: self = .Friday
-                case .Friday: self = .Saturday
-                case .Saturday: self = .Sunday
-                case .Sunday: self = .Monday
-            }
-        }
-        
-        mutating func getNextSixDays() -> [String] {
-            var arr = [String]()
-            
-            for _ in 0..<6 {
-                self.goNextDay()
-                arr.append(self.rawValue)
-            }
-            return arr
-        }
-    }
+    @IBOutlet var outNextWeekDay: [UILabel]!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -83,33 +52,15 @@ class ViewController: UIViewController {
         }
     }
     
-    func updateWeekDayUnix(unixTime: Double) {
+    func getDayNameUnix(unixTime: Double) -> String {
         
         let date = NSDate(timeIntervalSince1970: unixTime)
-        let dateFormatter  = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         
         dateFormatter.locale = NSLocale(localeIdentifier: NSLocale.currentLocale().localeIdentifier)
         dateFormatter.dateFormat = "EEEE"
         
-        let todayWeekDay = dateFormatter.stringFromDate(date)
-        
-        var asd = WeekDay(rawValue: todayWeekDay)
-        let daysArray = asd?.getNextSixDays()
-        
-        for i in 0..<6 {
-            print("\(i) — \(daysArray![i] ?? nil)")
-            self.outWeekDay[i].text = daysArray![i]
-        }
-    }
-    
-    // Debug
-    func set_task(delay: Double, closure: ()->()) {
-        dispatch_after(
-            dispatch_time(
-                DISPATCH_TIME_NOW,
-                Int64(delay * Double(NSEC_PER_SEC))
-            ),
-            dispatch_get_main_queue(), closure)
+        return dateFormatter.stringFromDate(date)
     }
     
     // MARK: Get weather data
@@ -119,7 +70,7 @@ class ViewController: UIViewController {
             "q" : self.currentCity,
             "mode" : "json",
             "units" : "metric",
-            "APPID" : "d1c9745179e1566578438f0f6fd39399"
+            "APPID" : appID
         ]
         
         let params2 = [
@@ -127,7 +78,7 @@ class ViewController: UIViewController {
             "mode" : "json",
             "units" : "metric",
             "cnt" : "6",
-            "APPID" : "d1c9745179e1566578438f0f6fd39399"
+            "APPID" : appID
         ]
         
         // MARK: Get now weather
@@ -157,16 +108,11 @@ class ViewController: UIViewController {
                     self.weatherData.nowPressure = nowPressure
                 }
                 
-                // Update week days
-                if let unix = data["dt"].double {
-                    self.updateWeekDayUnix(unix)
-                }
-                
                 self.setNowWeatherOutlets()
                 
-            } else {
+            }// else {
                 // No internet
-            }
+            //}
         }
         
         // MARK: Get next weather
@@ -175,7 +121,7 @@ class ViewController: UIViewController {
             if let js = response.result.value {
                 
                 let data = JSON(js)
-                //print("\n/////2nd: \(data)") // Debug
+                print("\n/////2nd: \(data)") // Debug
                 
                 func convertToRoundInt(d: Double?) -> Int {
                     return Int( round(d ?? 0.0) )
@@ -196,27 +142,19 @@ class ViewController: UIViewController {
                     
                     // Next days weather
                     self.weatherData.nextWeather[i] = data["list"][i]["weather"][0]["main"].string ?? "—"
+                    
+                    // Set week day name
+                    if let unix = data["list"][i]["dt"].double {
+                        self.weatherData.nextWeekDays[i] = self.getDayNameUnix(unix)
+                        //print("week = " + self.getDayNameUnix(unix))
+                    }
                 }
                 
                 self.setNextWeatherOutlets()
                 
-            } else {
+            }// else {
                 // No internet
-            }
-        }
-        
-        // Debug
-        set_task(4.0) {
-            
-            print("\n\n//////////")
-            print("nowTemp = \(self.weatherData.nowTemp)")
-            print("nowWeather = \(self.weatherData.nowWeather)")
-            print("nowWindSpeed = \(self.weatherData.nowWindSpeed)")
-            print("nowPressure = \(self.weatherData.nowPressure)\n")
-            
-            print("todayTemps = \(self.weatherData.todayTemps)\n")
-            print("nextTemp = \(self.weatherData.nextTemp)\n")
-            print("nextWeather = \(self.weatherData.nextWeather)")
+            //}
         }
     }
     
@@ -239,8 +177,21 @@ class ViewController: UIViewController {
         for i in 0...5 {
             self.outNextTempsDay[i].text = String(self.weatherData.nextTemp[i].day)  + "°"
             self.outNextTempsNight[i].text = String(self.weatherData.nextTemp[i].night)  + "°"
-            self.outNextWeather[i].text = String(self.weatherData.nextWeather[i])
+            self.outNextWeather[i].text = self.weatherData.nextWeather[i]
+            self.outNextWeekDay[i].text = self.weatherData.nextWeekDays[i]
         }
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        
+        if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Phone {
+            return UIInterfaceOrientationMask.Portrait
+        }
+        return UIInterfaceOrientationMask.AllButUpsideDown
     }
     
 }
